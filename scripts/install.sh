@@ -80,8 +80,22 @@ ln -sfn "$DASH_ROOT/backend" "$DASH_OPT"
 if [[ -d "$DASH_ROOT/frontend/dist" ]]; then
   mkdir -p "$DASH_OPT/frontend"
   ln -sfn "$DASH_ROOT/frontend/dist" "$DASH_OPT/frontend/dist"
+elif command -v npm >/dev/null 2>&1; then
+  echo "==> Construyendo frontend (npm install + build)..."
+  sudo -u "$VH_USER" -- bash -c "
+    set -e
+    cd $DASH_ROOT/frontend
+    npm install --no-audit --no-fund
+    npm run build
+  "
+  if [[ -d "$DASH_ROOT/frontend/dist" ]]; then
+    mkdir -p "$DASH_OPT/frontend"
+    ln -sfn "$DASH_ROOT/frontend/dist" "$DASH_OPT/frontend/dist"
+  else
+    echo "AVISO: build del frontend falló. El panel seguirá siendo solo API."
+  fi
 else
-  echo "AVISO: no hay frontend/dist. El panel seguirá siendo solo API."
+  echo "AVISO: no hay frontend/dist y no hay npm. El panel seguirá siendo solo API."
 fi
 
 echo "==> Configuración inicial"
@@ -96,7 +110,8 @@ admin_password_hash_file = "$CFG_DIR/admin_password_hash"
 EOF
   echo "$SECRET_KEY" > "$CFG_DIR/secret.key"
   INIT_PASSWORD=${INIT_PASSWORD:-$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 16)}
-  python3 -c "import bcrypt; open('$CFG_DIR/admin_password_hash','wb').write(bcrypt.hashpw(b'$INIT_PASSWORD', bcrypt.gensalt()))"
+  $DASH_ROOT/backend/.venv/bin/python -c \
+    "import bcrypt; open('$CFG_DIR/admin_password_hash','wb').write(bcrypt.hashpw(b'$INIT_PASSWORD', bcrypt.gensalt()))"
   echo
   echo "============================================================"
   echo "Password inicial del panel: $INIT_PASSWORD"
