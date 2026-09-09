@@ -1,6 +1,5 @@
 """Tests del servicio de mundos (formato 1.0 + legado)."""
 
-import os
 from pathlib import Path
 
 from app.services.worlds import WorldService

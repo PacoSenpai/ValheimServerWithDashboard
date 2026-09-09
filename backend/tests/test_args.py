@@ -67,7 +67,6 @@ def test_password_contiene_nombre_mundo():
 
 
 def test_preset_invalido():
-    from app.services.args import MODIFIER_VALUES
     m = _mod()
     m.preset = "nuclear"
     ok, msg = validate_modifiers(m)
@@ -75,7 +74,6 @@ def test_preset_invalido():
 
 
 def test_modifier_invalido():
-    from app.services.args import MODIFIER_VALUES
     m = _mod()
     m.combat = "facil"
     ok, _ = validate_modifiers(m)
