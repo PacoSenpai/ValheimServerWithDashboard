@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+body { font-feature-settings: "cv11", "ss01"; }
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-md border border-vh-border bg-vh-panel
+         px-3 py-1.5 text-sm font-medium text-slate-100 transition
+         hover:border-vh-accent/60 hover:bg-vh-panel/80 disabled:cursor-not-allowed disabled:opacity-50;
+}
+.btn-primary {
+  @apply border-vh-accent bg-vh-accent text-vh-bg hover:brightness-110;
+}
+.btn-danger {
+  @apply border-vh-danger text-vh-danger hover:bg-vh-danger/10;
+}
+.card {
+  @apply rounded-lg border border-vh-border bg-vh-panel p-4;
+}
+.input, .select, .textarea {
+  @apply w-full rounded-md border border-vh-border bg-vh-bg px-3 py-1.5 text-sm
+         text-slate-100 placeholder-slate-500 outline-none transition
+         focus:border-vh-accent/70;
+}
+.label {
+  @apply mb-1 block text-xs font-medium uppercase tracking-wider text-vh-muted;
+}
+.kbd {
+  @apply rounded border border-vh-border bg-vh-bg px-1.5 py-0.5 font-mono text-xs;
+}
+.badge {
+  @apply inline-flex items-center rounded-full border border-vh-border bg-vh-bg px-2 py-0.5 text-xs;
+}
+.scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: #2a3140; border-radius: 4px; }
+.console-line { font-family: "JetBrains Mono", monospace; font-size: 12.5px; line-height: 1.4; white-space: pre; }

@@ -1,0 +1,30 @@
+[Unit]
+Description=Valheim Dedicated Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=valheim
+Group=valheim
+WorkingDirectory=/opt/valheim/server
+EnvironmentFile=/etc/valheim-dashboard/valheim.env
+Environment=SteamAppId=892970
+Environment=LD_LIBRARY_PATH=/opt/valheim/server/linux64
+ExecStart=/opt/valheim/server/valheim_server.x86_64 -nographics -batchmode $ARGV
+StandardOutput=append:/var/log/valheim/server.log
+StandardError=inherit
+KillSignal=SIGINT
+TimeoutStopSec=120
+Restart=on-failure
+RestartSec=10
+Nice=-5
+LimitNOFILE=51200
+LimitCORE=infinity
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/var/lib/valheim /var/log/valheim
+
+[Install]
+WantedBy=multi-user.target

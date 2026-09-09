@@ -1,0 +1,22 @@
+[Unit]
+Description=Valheim Dashboard
+After=network-online.target valheim-server.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=valheim
+Group=valheim
+WorkingDirectory=/opt/valheim-dashboard
+Environment=PYTHONUNBUFFERED=1
+Environment=VALHEIM_DASHBOARD_CONFIG=/etc/valheim-dashboard/config.toml
+ExecStart=/opt/valheim-dashboard/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080 --workers 1
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/var/lib/valheim-dashboard /var/log/valheim /var/lib/valheim
+
+[Install]
+WantedBy=multi-user.target

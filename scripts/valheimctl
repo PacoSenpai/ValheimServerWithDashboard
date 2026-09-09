@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Wrapper de systemctl para acciones limitadas del juego.
+# Pensado para SSH de emergencia cuando la web no responde.
+
+CMD=${1:-help}
+SVC=${VH_SERVICE:-valheim-server}
+
+case "$CMD" in
+  status)  sudo systemctl status "$SVC" ;;
+  start)   sudo systemctl start "$SVC" ;;
+  stop)    sudo systemctl kill -s SIGINT "$SVC" ;;
+  restart) sudo systemctl restart "$SVC" ;;
+  logs)    sudo journalctl -u "$SVC" -n 200 --no-pager ;;
+  *) echo "Uso: valheimctl {status|start|stop|restart|logs}"; exit 2 ;;
+esac

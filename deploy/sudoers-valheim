@@ -1,0 +1,7 @@
+valheim ALL=(root) NOPASSWD: /usr/bin/systemctl start valheim-server.service
+valheim ALL=(root) NOPASSWD: /usr/bin/systemctl stop valheim-server.service
+valheim ALL=(root) NOPASSWD: /usr/bin/systemctl restart valheim-server.service
+valheim ALL=(root) NOPASSWD: /usr/bin/systemctl status valheim-server.service
+valheim ALL=(root) NOPASSWD: /usr/bin/systemctl is-active valheim-server.service
+valheim ALL=(root) NOPASSWD: /usr/bin/systemctl kill -s SIGINT valheim-server.service
+valheim ALL=(root) NOPASSWD: /usr/bin/systemctl daemon-reload valheim-server.service

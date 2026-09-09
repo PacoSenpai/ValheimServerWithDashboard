@@ -1,0 +1,80 @@
+# Configuración de ejemplo. NO contiene secretos.
+# Se copia a /etc/valheim-dashboard/config.toml con permisos 0600.
+# El token del bot se sobrescribe con la variable de entorno
+# VALHEIM_DASHBOARD_TELEGRAM_TOKEN.
+
+[panel]
+bind = "0.0.0.0"
+port = 8080
+session_ttl_hours = 24
+allowed_origins = ["http://localhost:8080"]
+login_rate_limit_per_min = 5
+
+[game]
+service_name = "valheim-server"
+install_dir = "/opt/valheim/server"
+savedir = "/var/lib/valheim/saves"
+backups_dir = "/var/lib/valheim/backups"
+log_file = "/var/log/valheim/server.log"
+env_file = "/etc/valheim-dashboard/valheim.env"
+name = "Mi Valheim Server"
+world = "Dedicated"
+password = "cambia-esta-password"
+port = 2456
+public = true
+crossplay = false
+save_interval = 1800
+instance_id = "1"
+
+[modifiers]
+preset = "normal"
+combat = "normal"
+deathpenalty = "normal"
+resources = "normal"
+raids = "normal"
+portals = "normal"
+setkeys = []
+
+[network]
+public_host = "wireguard-s9kvqmuzrbsijrkb5u3.pacoserver.cc"
+use_a2s = true
+a2s_probe_interval_seconds = 10
+
+[telegram]
+token = ""
+chat_id = ""
+enabled = false
+events = ["down", "restart", "resources", "maintenance", "update", "backup"]
+cooldown_seconds = 60
+rate_limit_per_minute = 18
+max_retries = 3
+timeout_seconds = 5.0
+notify_recovery = true
+
+[backup]
+max_keep = 2
+pre_update = true
+pre_modifier_change = true
+pre_restore = true
+
+[schedule]
+restart_cron = ""
+idle_shutdown_minutes = 0
+warn_before_restart_minutes = 10
+maintenance_warnings = [10, 1]
+
+[metrics]
+interval_seconds = 1.0
+retention_days = 30
+downsample_after_hours = 24
+cpu_alert_percent = 90.0
+cpu_alert_window_minutes = 5
+ram_alert_percent = 85.0
+disk_alert_percent = 80.0
+disk_alert_critical_percent = 90.0
+crash_loop_threshold = 3
+crash_loop_window_minutes = 10
+
+[storage]
+data_dir = "/var/lib/valheim-dashboard"
+db_path = "/var/lib/valheim-dashboard/app.sqlite"
