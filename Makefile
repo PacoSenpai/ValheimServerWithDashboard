@@ -50,7 +50,7 @@ lint: lint-backend lint-frontend
 
 lint-backend:
 	$(BACKEND)/.venv/bin/ruff check $(BACKEND)
-	$(BACKEND)/.venv/bin/mypy $(BACKEND)
+	cd $(BACKEND) && .venv/bin/mypy
 
 lint-frontend:
 	cd $(FRONTEND) && npm run lint

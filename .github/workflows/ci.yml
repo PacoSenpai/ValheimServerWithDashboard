@@ -16,8 +16,8 @@ jobs:
       - run: python -m venv backend/.venv
       - run: backend/.venv/bin/python -m pip install -e backend[dev]
       - run: backend/.venv/bin/ruff check backend
-      - run: backend/.venv/bin/mypy backend
-      - run: backend/.venv/bin/pytest -q backend/tests
+      - run: cd backend && .venv/bin/mypy
+      - run: cd backend && .venv/bin/pytest -q tests
   frontend:
     runs-on: ubuntu-latest
     steps:
