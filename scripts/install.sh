@@ -150,8 +150,13 @@ install -m 0755 "$DASH_ROOT/scripts/valheimctl" /usr/local/bin/valheimctl
 
 echo "==> Steamcmd (descarga inicial de 896660, si no existe)"
 if [[ ! -f "$GAME_DIR/valheim_server.x86_64" ]]; then
-  sudo -u "$VH_USER" -- bash -c "steamcmd +force_install_dir $GAME_DIR +login anonymous +app_update 896660 validate +quit" \
-    || echo "AVISO: steamcmd falló. Reintenta con: sudo -u $VH_USER steamcmd +force_install_dir $GAME_DIR +login anonymous +app_update 896660 validate +quit"
+  STEAMCMD_BIN=$(command -v steamcmd || echo /home/steam/steamcmd/steamcmd.sh)
+  if ! sudo -u "$VH_USER" -- bash -c "command -v steamcmd >/dev/null 2>&1 || [ -x /home/steam/steamcmd/steamcmd.sh ]" 2>/dev/null; then
+    echo "AVISO: steamcmd no está en el PATH de $VH_USER. La descarga inicial puede fallar."
+    echo "Reintenta manualmente: sudo -u $VH_USER $STEAMCMD_BIN +force_install_dir $GAME_DIR +login anonymous +app_update 896660 validate +quit"
+  fi
+  sudo -u "$VH_USER" -- bash -c "$STEAMCMD_BIN +force_install_dir $GAME_DIR +login anonymous +app_update 896660 validate +quit" \
+    || echo "AVISO: steamcmd falló. Reintenta con: sudo -u $VH_USER $STEAMCMD_BIN +force_install_dir $GAME_DIR +login anonymous +app_update 896660 validate +quit"
 fi
 
 echo "==> Arrancando el panel"
