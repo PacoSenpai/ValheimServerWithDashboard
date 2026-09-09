@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import time
 from collections import deque
 from collections.abc import Callable
 from pathlib import Path
@@ -49,9 +48,11 @@ class LogStream:
                             from app.services.logparser import parse_line
                             ev = parse_line(line)
                             if ev is not None:
-                                result = self._handler.feed(ev)
-                                if asyncio.iscoroutine(result):
-                                    await result
+                                handler = self._handler
+                                if hasattr(handler, "feed"):
+                                    result = handler.feed(ev)
+                                    if asyncio.iscoroutine(result):
+                                        await result
                         except Exception:
                             log.exception("Error alimentando el parser")
                     continue

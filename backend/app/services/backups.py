@@ -12,7 +12,7 @@ from typing import Any
 
 from app.core.config import Settings
 from app.services.audit import AuditService
-from app.services.process import ProcessService, ServerState
+from app.services.process import ProcessService
 
 log = logging.getLogger(__name__)
 
@@ -91,7 +91,8 @@ class BackupService:
         )
         await self.audit.log("backup.ok", {"reason": reason, "size": size, "worlds": worlds})
         await self._enforce_retention()
-        bid = (await self.audit.db.fetchone("SELECT last_insert_rowid()"))[0]
+        row = await self.audit.db.fetchone("SELECT last_insert_rowid()")
+        bid = row[0] if row else 0
         return BackupInfo(id=bid, ts=ts, reason=reason, path=out,
                           size=size, sha256=sha, worlds=worlds)
 

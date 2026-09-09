@@ -90,12 +90,15 @@ class PlayerEventHandler:
             if sid:
                 await self._emit_player(sid, name=name, event="death")
         elif ev == PlayerEvent.LEAVE:
-            sid, _ = self._oldest_online_without()
+            result = self._oldest_online_without()
+            sid, _ = result
             if sid:
-                info = self.roster.players.get(sid)
-                if info:
-                    info.status = "offline"
-                await self._emit_player(sid, name=info.name if info else "", event="leave")
+                leave_info: PlayerInfo | None = self.roster.players.get(sid)
+                leave_name = ""
+                if leave_info is not None:
+                    leave_info.status = "offline"
+                    leave_name = leave_info.name
+                await self._emit_player(sid, name=leave_name, event="leave")
         elif ev == PlayerEvent.BAD_PASS:
             sid = data.get("steam_id", "")
             await self.bus.publish("alert", {"kind": "badpass",

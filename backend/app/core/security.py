@@ -5,11 +5,10 @@ from __future__ import annotations
 import hashlib
 import hmac
 import logging
-import os
 import time
 from collections import defaultdict
 from collections.abc import Awaitable, Callable
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -45,7 +44,7 @@ def set_session(response: Response, settings: PanelSettings, key: bytes) -> None
     payload = {
         "sub": "admin",
         "iat": int(time.time()),
-        "exp": datetime.now(timezone.utc) + timedelta(hours=ttl),
+        "exp": datetime.now(UTC) + timedelta(hours=ttl),
     }
     token = jwt.encode(payload, key, algorithm="HS256")
     response.set_cookie(

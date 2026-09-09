@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 import time
 from datetime import datetime
-from typing import Any
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger

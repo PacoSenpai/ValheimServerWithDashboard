@@ -11,7 +11,7 @@ import re
 import time
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 
@@ -126,7 +126,7 @@ def parse_line(line: str) -> ParsedEvent | None:
         try:
             ts = int(
                 datetime.strptime(m.group(1), "%m/%d/%Y %H:%M:%S")
-                .replace(tzinfo=timezone.utc)
+                .replace(tzinfo=UTC)
                 .timestamp()
             )
         except ValueError:
@@ -150,4 +150,4 @@ def parse_line(line: str) -> ParsedEvent | None:
 
 
 def parse_lines(lines: Iterable[str]) -> list[ParsedEvent]:
-    return [e for e in (parse_line(l) for l in lines) if e is not None]
+    return [e for e in (parse_line(line) for line in lines) if e is not None]

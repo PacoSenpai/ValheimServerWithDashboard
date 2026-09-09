@@ -10,9 +10,7 @@ from __future__ import annotations
 import asyncio
 import enum
 import logging
-import os
-import shlex
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from app.core.config import Settings
@@ -112,7 +110,7 @@ class ProcessService:
                 stderr=asyncio.subprocess.PIPE,
             )
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=90)
-        except asyncio.TimeoutError:
+        except TimeoutError:
             log.error("Timeout en %s", cmd)
             return 124, ""
         out = (stdout or b"").decode("utf-8", errors="replace").strip()
@@ -120,7 +118,7 @@ class ProcessService:
         if err:
             log.warning("stderr: %s", err)
         if action == "status":
-            self._last_change = datetime.now(timezone.utc).isoformat(timespec="seconds")
+            self._last_change = datetime.now(UTC).isoformat(timespec="seconds")
         return proc.returncode or 0, out + ("\n" + err if err else "")
 
     def snapshot(self) -> dict[str, Any]:

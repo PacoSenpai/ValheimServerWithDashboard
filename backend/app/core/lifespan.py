@@ -2,17 +2,12 @@
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import os
-import shutil
-import subprocess
-import sys
-from pathlib import Path
 
 import bcrypt
 
-from app.core.config import Settings, get_settings, reload_settings
+from app.core.config import Settings
 from app.core.db import Database
 from app.core.events import EventBus
 from app.core.registry import Registry
@@ -23,8 +18,8 @@ from app.services.lists import ListService
 from app.services.logstream import LogStream
 from app.services.metrics import MetricsService
 from app.services.notifier import Notifier
-from app.services.roster import PlayerEventHandler
 from app.services.process import ProcessService
+from app.services.roster import PlayerEventHandler
 from app.services.scheduler import SchedulerService
 from app.services.steam import SteamService
 from app.services.updates import UpdateService

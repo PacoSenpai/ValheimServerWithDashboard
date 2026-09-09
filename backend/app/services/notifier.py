@@ -6,7 +6,6 @@ import asyncio
 import logging
 import time
 from collections import defaultdict
-from collections.abc import Awaitable, Callable
 from typing import Any
 
 import httpx
@@ -43,7 +42,6 @@ class Notifier:
         self._queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
         self._worker: asyncio.Task[None] | None = None
         self._last_sent: dict[str, float] = defaultdict(float)
-        self._alert_state: dict[str, str] = {}
         self._recent: list[dict[str, Any]] = []
 
     async def start(self) -> None:
@@ -99,8 +97,8 @@ class Notifier:
         if not self.settings.token:
             return []
         url = f"https://api.telegram.org/bot{self.settings.token}/getUpdates"
-        async with httpx.AsyncClient(timeout=5.0) as c:
-            r = await c.get(url)
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            r = await client.get(url)
         data = r.json()
         chats: list[dict[str, Any]] = []
         for upd in data.get("result", []):
@@ -108,13 +106,13 @@ class Notifier:
             if ch:
                 chats.append({"id": ch.get("id"), "title": ch.get("title") or ch.get("username"),
                               "type": ch.get("type")})
-        seen: set = set()
+        seen: set[Any] = set()
         out: list[dict[str, Any]] = []
-        for c in chats:
-            if c["id"] in seen:
+        for chat in chats:
+            if chat["id"] in seen:
                 continue
-            seen.add(c["id"])
-            out.append(c)
+            seen.add(chat["id"])
+            out.append(chat)
         return out
 
     async def _run(self) -> None:

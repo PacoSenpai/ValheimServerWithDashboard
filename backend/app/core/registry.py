@@ -11,6 +11,9 @@ from dataclasses import dataclass
 
 from fastapi import Request
 
+from app.core.config import Settings
+from app.core.db import Database
+from app.core.events import EventBus
 from app.services.a2s import A2SProbe
 from app.services.audit import AuditService
 from app.services.backups import BackupService
@@ -23,10 +26,6 @@ from app.services.roster import PlayerEventHandler
 from app.services.scheduler import SchedulerService
 from app.services.updates import UpdateService
 from app.services.worlds import WorldService
-
-from app.core.config import Settings
-from app.core.db import Database
-from app.core.events import EventBus
 
 
 @dataclass
@@ -50,3 +49,7 @@ class Registry:
 
 def get_registry(request: Request) -> Registry:
     return request.app.state.registry
+
+
+def get_registry_from_websocket(websocket) -> Registry:
+    return websocket.app.state.registry

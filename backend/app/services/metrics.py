@@ -7,7 +7,7 @@ import asyncio
 import logging
 import time
 from collections import deque
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import psutil
@@ -46,6 +46,7 @@ class MetricsService:
         self._was_running = False
         self._last_psutil = psutil.net_io_counters()
         self._proc_cache: dict[int, psutil.Process] = {}
+        self._alert_state: dict[str, str] = {}
 
     async def start(self) -> None:
         self._stop.clear()
@@ -141,7 +142,7 @@ class MetricsService:
             log.exception("metrics persist error")
 
     async def _downsample(self) -> None:
-        cutoff = int((datetime.now(timezone.utc) - timedelta(hours=2)).timestamp())
+        cutoff = int((datetime.now(UTC) - timedelta(hours=2)).timestamp())
         async with self.db.cursor() as cur:
             await cur.execute(
                 "SELECT ts, AVG(cpu), AVG(rss), AVG(sys_cpu), AVG(sys_mem), "

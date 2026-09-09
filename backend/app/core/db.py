@@ -123,12 +123,14 @@ class Database:
     async def fetchone(self, sql: str, params: tuple = ()) -> tuple | None:
         assert self._conn is not None
         async with self._conn.execute(sql, params) as cur:
-            return await cur.fetchone()
+            row = await cur.fetchone()
+            return tuple(row) if row is not None else None
 
     async def fetchall(self, sql: str, params: tuple = ()) -> list[tuple]:
         assert self._conn is not None
         async with self._conn.execute(sql, params) as cur:
-            return await cur.fetchall()
+            rows = await cur.fetchall()
+            return [tuple(r) for r in rows]
 
     async def prune(self, days: int) -> int:
         cutoff = int((datetime.now() - timedelta(days=days)).timestamp())

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any
 
 from app.core.util import is_platform_id, is_steamid64, safe_read_text
 

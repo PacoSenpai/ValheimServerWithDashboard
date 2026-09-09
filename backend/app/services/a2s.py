@@ -33,7 +33,7 @@ class A2SProbe:
         if self._task:
             try:
                 await asyncio.wait_for(self._task, timeout=2.0)
-            except (asyncio.TimeoutError, asyncio.CancelledError):
+            except (TimeoutError, asyncio.CancelledError):
                 self._task.cancel()
 
     async def _run(self) -> None:

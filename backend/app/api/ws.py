@@ -3,17 +3,15 @@
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
-from collections.abc import AsyncIterator
 from typing import Any
 
-from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect, status
-
-from app.core.registry import get_registry
-from app.core.security import LoginRateLimiter, get_key
-from app.core.config import get_settings
 import jwt
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
+
+from app.core.config import get_settings
+from app.core.registry import get_registry_from_websocket
+from app.core.security import LoginRateLimiter, get_key
 
 log = logging.getLogger(__name__)
 
@@ -41,11 +39,11 @@ async def ws_live(websocket: WebSocket):
     if not await _auth_ws(websocket):
         return
     await websocket.accept()
-    reg = get_registry(websocket)
-    queue = asyncio.Queue(maxsize=64)
+    reg = get_registry_from_websocket(websocket)
+    queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue(maxsize=64)
     topics = {"roster", "metrics", "a2s", "join_code", "alert", "player"}
 
-    async def pump(topic: str) -> AsyncIterator[dict[str, Any]]:
+    async def pump(topic: str) -> None:
         async for item in reg.bus.subscribe(topic):
             await queue.put({"topic": topic, "payload": item})
 
@@ -74,10 +72,10 @@ async def ws_console(websocket: WebSocket):
     if not await _auth_ws(websocket):
         return
     await websocket.accept()
-    reg = get_registry(websocket)
+    reg = get_registry_from_websocket(websocket)
     queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue(maxsize=512)
 
-    async def feed() -> AsyncIterator[None]:
+    async def feed() -> None:
         async for item in reg.bus.subscribe("log"):
             await queue.put(item)
 

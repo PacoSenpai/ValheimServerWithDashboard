@@ -4,12 +4,9 @@ from __future__ import annotations
 
 import logging
 import os
-import time
-from pathlib import Path
 from typing import Any
 
-import bcrypt
-from fastapi import APIRouter, Body, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 
 from app.api.schemas import (
@@ -23,7 +20,7 @@ from app.api.schemas import (
     TelegramIn,
     WorldIn,
 )
-from app.core.config import get_settings, reload_settings
+from app.core.config import get_settings
 from app.core.registry import Registry, get_registry
 from app.core.security import (
     LoginRateLimiter,
@@ -36,8 +33,8 @@ from app.core.security import (
     set_session,
     verify_password,
 )
+from app.core.util import mask_token
 from app.services.args import build_argv, diff, parse_env_argv, validate_game, validate_modifiers
-from app.core.util import is_platform_id, is_steamid64, mask_token, safe_read_text, validate_password
 
 log = logging.getLogger(__name__)
 
@@ -134,7 +131,7 @@ async def get_argv(reg: Registry = Depends(get_registry),
 @router.post("/server/argv/preview")
 async def preview_argv(payload: GameConfigIn, reg: Registry = Depends(get_registry),
                        _: dict = Depends(auth_dependency)):
-    from app.core.config import GameSettings, ModifiersSettings
+    from app.core.config import GameSettings
     settings = get_settings()
     g = GameSettings(**{**settings.game.model_dump(), **payload.model_dump()})
     ok, msg = validate_game(g)
@@ -355,7 +352,8 @@ async def telegram_test(_: dict = Depends(auth_dependency),
 
 @router.post("/telegram/detect")
 async def telegram_detect(_: dict = Depends(auth_dependency)):
-    n = Notifier(get_settings())
+    from app.services.notifier import Notifier as _Notifier
+    n = _Notifier(get_settings())
     return await n.detect_chat()
 
 

@@ -7,8 +7,6 @@ lo anterior; los modificadores van siempre después. ``normal`` se omite
 
 from __future__ import annotations
 
-from typing import Iterable
-
 from app.core.config import GameSettings, ModifiersSettings
 from app.core.util import validate_password
 
@@ -118,7 +116,6 @@ def diff(old: list[str], new: list[str]) -> list[dict[str, str]]:
 
 
 def parse_env_argv(path) -> str:
-    from pathlib import Path
     if not path.is_file():
         return ""
     text = path.read_text(encoding="utf-8", errors="replace")

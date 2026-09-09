@@ -8,7 +8,6 @@ import asyncio
 import logging
 import re
 from pathlib import Path
-from typing import Any
 
 from app.core.config import Settings
 
@@ -54,7 +53,7 @@ class SteamService:
             *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
         )
         stdout, _ = await proc.communicate()
-        text = (stdout or b"").decode("utf-8", "replace", errors="replace")
+        text = (stdout or b"").decode("utf-8", errors="replace")
         return proc.returncode or 0, text
 
     async def is_up_to_date(self) -> tuple[bool, str]:
@@ -69,6 +68,6 @@ class SteamService:
             *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
         )
         stdout, _ = await proc.communicate()
-        text = (stdout or b"").decode("utf-8", "replace", errors="replace")
+        text = (stdout or b"").decode("utf-8", errors="replace")
         current = await self.installed_version()
         return current in text, current
