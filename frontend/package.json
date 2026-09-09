@@ -4,8 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "rm -f tsconfig.tsbuildinfo && tsc --noEmit && vite build",
-    "typecheck": "rm -f tsconfig.tsbuildinfo && tsc --noEmit",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo node_modules/.vite",
+    "prebuild": "npm run clean",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "lint": "eslint .",
     "test": "vitest"
