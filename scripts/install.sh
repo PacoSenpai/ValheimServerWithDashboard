@@ -25,12 +25,32 @@ if ! id "$VH_USER" >/dev/null 2>&1; then
 fi
 
 echo "==> Dependencias del sistema"
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y --no-install-recommends software-properties-common ca-certificates curl gnupg
 dpkg --add-architecture i386 >/dev/null
 add-apt-repository -y multiverse >/dev/null
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-  software-properties-common ca-certificates curl \
-  lib32gcc-s1 libatomic1 zstd jq steamcmd ufw
+apt-get install -y --no-install-recommends \
+  lib32gcc-s1 libatomic1 zstd jq ufw
+
+if ! command -v steamcmd >/dev/null 2>&1; then
+  echo "==> steamcmd: instalando desde el repo multiverse"
+  apt-get install -y --no-install-recommends steamcmd || {
+    echo "AVISO: 'apt install steamcmd' falló. Lo descargaremos manualmente."
+    if ! id steam >/dev/null 2>&1; then
+      useradd -m -s /bin/bash steam
+    fi
+    sudo -u steam -- bash -c '
+      set -e
+      mkdir -p /home/steam/steamcmd
+      cd /home/steam/steamcmd
+      curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
+      ./steamcmd.sh +quit
+    '
+    ln -sf /home/steam/steamcmd/steamcmd.sh /usr/local/bin/steamcmd
+  }
+fi
 
 echo "==> Estructura de directorios"
 mkdir -p "$GAME_DIR" "$CFG_DIR" "$LOG_DIR" "$SAVEDIR" "$BACKUPDIR" \
